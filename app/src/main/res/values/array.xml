@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="database">
+        <item>CNU - Defender</item>
+        <item>Pair - Teton Software - Pets</item>
+    </string-array>
+    <string-array name="database_entries">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>
