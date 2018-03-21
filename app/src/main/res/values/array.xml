@@ -5,7 +5,7 @@
         <item>Pair - Teton Software - Pets</item>
     </string-array>
     <string-array name="database_entries">
-        <item>1</item>
-        <item>2</item>
+        <item>http://www.pcs.cnu.edu/~kperkins/pets/pets.json</item>
+        <item>http://www.pcs.cnu.edu/~kperkins/pets/</item>
     </string-array>
 </resources>

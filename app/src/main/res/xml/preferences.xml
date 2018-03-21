@@ -4,5 +4,6 @@
         android:title="@string/info"
         android:summary="@string/info_summary"
         android:entries="@array/database"
-        android:entryValues="@array/database_entries" />
+        android:entryValues="@array/database_entries"
+        />
 </PreferenceScreen>
