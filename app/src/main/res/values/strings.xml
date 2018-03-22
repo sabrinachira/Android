@@ -4,5 +4,4 @@
     <string name="info"> Info</string>
     <string name="info_summary"> Select which site to get JSON data from</string>
     <string name="popup_info"> Info</string>
-
 </resources>

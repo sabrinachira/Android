@@ -6,6 +6,6 @@
     </string-array>
     <string-array name="database_entries">
         <item>http://www.pcs.cnu.edu/~kperkins/pets/pets.json</item>
-        <item>http://www.pcs.cnu.edu/~kperkins/pets/</item>
+        <item>http://www.tetonsoftware.com/pets/pets.json</item>
     </string-array>
 </resources>
