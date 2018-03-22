@@ -34,9 +34,15 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mv = (WebImageView_KP)findViewById(R.id.image_view);
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
         petSpinner = (Spinner) findViewById(R.id.spinner);
         petSpinner.setOnItemSelectedListener(this);
         myCheck = new ConnectivityCheck(this);
