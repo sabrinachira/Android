@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
     ArrayList<Pets> pets;
     Spinner petSpinner;
     private SharedPreferences myPreference;
-    private SharedPreferences.OnSharedPreferenceChangeListener listener = null;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private boolean enablePreferenceListener = false;
     WebImageView_KP mv;
 
@@ -35,13 +35,9 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         setContentView(R.layout.activity_main);
         mv = (WebImageView_KP)findViewById(R.id.image_view);
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
 
         petSpinner = (Spinner) findViewById(R.id.spinner);
         petSpinner.setOnItemSelectedListener(this);
@@ -58,10 +54,14 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         // notify user of problem? Not very good, maybe wait a little while and
         // try later? remember make users life easier
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
-        if (myCheck.isNetworkReachable()) {
+        if (myCheck.isNetworkReachable() && myCheck.isWifiReachable()) { //ADDED
             //A common async task
             DownloadTask_KP myTask = new DownloadTask_KP(this);
             myTask.execute(MYURL);
+        }
+        else{
+            mv.setImageResource(R.drawable.network_unreachable);
+            petSpinner.setVisibility(View.GONE);
         }
     }
 
@@ -153,7 +153,12 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         String fileOfSelectedImage = pets.get(position).getFile();
         String beginingOfURL = "http://www.pcs.cnu.edu/~kperkins/pets/";
         String fullUrl = beginingOfURL + fileOfSelectedImage;
-        mv.setImageUrl(fullUrl);
+        if (!myCheck.isNetworkReachable()){
+            mv.setImageResource(R.drawable.network_unreachable);
+        }
+        else{
+            mv.setImageUrl(fullUrl);
+        }
     }
 
     @Override
