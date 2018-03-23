@@ -45,8 +45,23 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         pets = new ArrayList<>();
         setPreferenceChangeListener();
-        pullJSONData();
+        if(savedInstanceState == null){
+            pullJSONData();
+        }
+
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ConnectivityCheck myCheck = new ConnectivityCheck(this);
+        if (myCheck.isNetworkReachable() && myCheck.isWifiReachable()) {
+            //only reload json data if our pets arrayList is empty. When the network checks return no network I clear to the pets arrayList
+            if(pets.isEmpty()){
+                pullJSONData();
+            }
+        }
+    }
+
 
     public void pullJSONData(){
         // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         else{
             mv.setImageResource(R.drawable.network_unreachable);
             petSpinner.setVisibility(View.GONE);
+            pets.clear();
         }
     }
 
@@ -109,6 +125,10 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
     }
 
     public void addPetsToList(JSONArray j){
+        //make sure pets arrayList if empty before you add more to it.
+        if(pets.size() > 0){
+            pets.clear();
+        }
         for (int i = 0; i < j.length(); i++) {
             try {
                 //Getting json object
@@ -155,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         String fullUrl = beginingOfURL + fileOfSelectedImage;
         if (!myCheck.isNetworkReachable() || !myCheck.isWifiReachable()){
             mv.setImageResource(R.drawable.network_unreachable);
+            petSpinner.setVisibility(View.GONE);
+            pets.clear();
         }
         else{
             mv.setImageUrl(fullUrl);
