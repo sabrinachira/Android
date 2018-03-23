@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         String fileOfSelectedImage = pets.get(position).getFile();
         String beginingOfURL = "http://www.pcs.cnu.edu/~kperkins/pets/";
         String fullUrl = beginingOfURL + fileOfSelectedImage;
-        if (!myCheck.isNetworkReachable()){
+        if (!myCheck.isNetworkReachable() || !myCheck.isWifiReachable()){
             mv.setImageResource(R.drawable.network_unreachable);
         }
         else{
