@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="PREF_LIST"
+        android:key="@string/PREF_LIST"
         android:title="@string/info"
         android:summary="@string/info_summary"
         android:entryValues="@array/database_entries"

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
     ConnectivityCheck myCheck;
-    private String MYURL = "http://www.pcs.cnu.edu/~kperkins/pets/pets.json";
+    private String MYURL = "http:www.pcs.cnu.edu/~kperkins/pets/pets.json"; //getString(R.string.link_json);
     JSONArray jsonArray;
     ArrayList<Pets> pets;
     Spinner petSpinner;
@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
     @Override
     protected void onResume() {
         super.onResume();
+
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
-        if (myCheck.isNetworkReachable() && myCheck.isWifiReachable()) {
+        if (myCheck.isNetworkReachable() || myCheck.isWifiReachable()) {
             //only reload json data if our pets arrayList is empty. When the network checks return no network I clear to the pets arrayList
             if(pets.isEmpty()){
                 pullJSONData();
@@ -62,14 +63,10 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         }
     }
 
-
     public void pullJSONData(){
-        // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // make sure the network is up before you attempt a connection
-        // notify user of problem? Not very good, maybe wait a little while and
-        // try later? remember make users life easier
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
-        if (myCheck.isNetworkReachable() && myCheck.isWifiReachable()) { //ADDED
+        if (myCheck.isNetworkReachable() || myCheck.isWifiReachable()) { //ADDED
             //A common async task
             DownloadTask_KP myTask = new DownloadTask_KP(this);
             myTask.execute(MYURL);
@@ -87,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
             listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 @Override
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                    if (key.equals("PREF_LIST")) {
-                        String myString = myPreference.getString("PREF_LIST", "Nothing Found");
+                    if (key.equals(getString(R.string.PREF_LIST))) {
+                        String myString = myPreference.getString(getString(R.string.PREF_LIST), getString(R.string.Nothing_Found));
                         pets.clear();
                         MYURL = myString;
                         pullJSONData();
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         }
         try {
             JSONObject jsonobject = new JSONObject(string);
-            jsonArray = jsonobject.getJSONArray("pets");
+            jsonArray = jsonobject.getJSONArray(getString(R.string.pets));
             addPetsToList(jsonArray);
             setPetAdapter();
         } catch (Exception e) {
@@ -133,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
             try {
                 //Getting json object
                 JSONObject JsonPetObject = j.getJSONObject(i);
-                String name = JsonPetObject.getString("name");
-                String file = JsonPetObject.getString("file");
+                String name = JsonPetObject.getString(getString(R.string.name));
+                String file = JsonPetObject.getString(getString(R.string.file));
                 Pets aPet = new Pets(name,file);
                 pets.add(aPet);
             } catch (JSONException e) {
@@ -171,9 +168,9 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         String fileOfSelectedImage = pets.get(position).getFile();
-        String beginingOfURL = "http://www.pcs.cnu.edu/~kperkins/pets/";
+        String beginingOfURL = "http://www.pcs.cnu.edu/~kperkins/pets/"; //getString(R.string.link);
         String fullUrl = beginingOfURL + fileOfSelectedImage;
-        if (!myCheck.isNetworkReachable() || !myCheck.isWifiReachable()){
+        if (!myCheck.isNetworkReachable() && !myCheck.isWifiReachable()){
             mv.setImageResource(R.drawable.network_unreachable);
             petSpinner.setVisibility(View.GONE);
             pets.clear();
