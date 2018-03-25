@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         myCheck = new ConnectivityCheck(this);
         myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         MYURL = myPreference.getString(getString(R.string.PREF_LIST), getString(R.string.Nothing_Found));
+        if (MYURL.equals(getString(R.string.Nothing_Found))) { //nothing selected, must be showing the pets
+            MYURL = "http://www.pcs.cnu.edu/~kperkins/pets/pets.json";
+        }
         pets = new ArrayList<>();
         setPreferenceChangeListener();
 
@@ -110,12 +113,12 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
 
     public void processJSON(String string) {
         if (MYURL.equals(getString(R.string.Nothing_Found))) { //nothing selected
-            mv.setImageResource(R.drawable.no_json);
-            petSpinner.setVisibility(View.GONE);
+            string = "http://www.pcs.cnu.edu/~kperkins/pets/pets.json";
+            MYURL = string;
+            petSpinner.setVisibility(View.VISIBLE);
         } else if (string == null) { //teton selected
             mv.setImageResource(R.drawable.erroring);
             petSpinner.setVisibility(View.GONE);
-            return;
         } else { //pets selected
             petSpinner.setVisibility(View.VISIBLE);
         }
@@ -127,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void addPetsToList(JSONArray j) {
