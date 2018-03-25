@@ -45,10 +45,12 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         pets = new ArrayList<>();
         setPreferenceChangeListener();
-        if(savedInstanceState == null){
+        if(savedInstanceState != null){
+            this.MYURL = savedInstanceState.getString("myURL");
+        }
+        else{
             pullJSONData();
         }
-
     }
     @Override
     protected void onResume() {
@@ -57,12 +59,16 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
         if (myCheck.isNetworkReachable() || myCheck.isWifiReachable()) {
             //only reload json data if our pets arrayList is empty. When the network checks return no network I clear to the pets arrayList
-            if(pets.isEmpty()){
+            if(pets.isEmpty()) {
                 pullJSONData();
             }
         }
     }
-
+@Override
+protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putString("myURL",this.MYURL);
+}
     public void pullJSONData(){
         // make sure the network is up before you attempt a connection
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
