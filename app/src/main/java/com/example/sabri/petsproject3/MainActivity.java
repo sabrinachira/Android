@@ -12,9 +12,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
@@ -33,8 +35,7 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mv = (WebImageView_KP)findViewById(R.id.image_view);
-
+        mv = (WebImageView_KP) findViewById(R.id.image_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -45,8 +46,11 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         MYURL = myPreference.getString(getString(R.string.PREF_LIST), getString(R.string.Nothing_Found));
         pets = new ArrayList<>();
         setPreferenceChangeListener();
+
         pullJSONData();
+
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -54,25 +58,26 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
         if (myCheck.isNetworkReachable() || myCheck.isWifiReachable()) {
             //only reload json data if our pets arrayList is empty. When the network checks return no network I clear to the pets arrayList
-            if(pets.isEmpty()) {
+            if (pets.isEmpty()) {
                 pullJSONData();
             }
         }
     }
-@Override
-protected void onSaveInstanceState(Bundle outState){
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("myURL",this.MYURL);
-}
-    public void pullJSONData(){
+        outState.putString("myURL", this.MYURL);
+    }
+
+    public void pullJSONData() {
         // make sure the network is up before you attempt a connection
         ConnectivityCheck myCheck = new ConnectivityCheck(this);
         if (myCheck.isNetworkReachable() || myCheck.isWifiReachable()) { //ADDED
             //A common async task
             DownloadTask_KP myTask = new DownloadTask_KP(this);
             myTask.execute(MYURL);
-        }
-        else{
+        } else {
             mv.setImageResource(R.drawable.network_unreachable);
             petSpinner.setVisibility(View.GONE);
             pets.clear();
@@ -104,12 +109,14 @@ protected void onSaveInstanceState(Bundle outState){
     }
 
     public void processJSON(String string) {
-        if(string == null){
-            mv.setImageResource(R.drawable.errorimg);
+        if (MYURL.equals(getString(R.string.Nothing_Found))) { //nothing selected
+            mv.setImageResource(R.drawable.no_json);
+            petSpinner.setVisibility(View.GONE);
+        } else if (string == null) { //teton selected
+            mv.setImageResource(R.drawable.erroring);
             petSpinner.setVisibility(View.GONE);
             return;
-        }
-        else {
+        } else { //pets selected
             petSpinner.setVisibility(View.VISIBLE);
         }
         try {
@@ -120,11 +127,13 @@ protected void onSaveInstanceState(Bundle outState){
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
-    public void addPetsToList(JSONArray j){
+    public void addPetsToList(JSONArray j) {
         //make sure pets arrayList if empty before you add more to it.
-        if(pets.size() > 0){
+        if (pets.size() > 0) {
             pets.clear();
         }
         for (int i = 0; i < j.length(); i++) {
@@ -133,7 +142,7 @@ protected void onSaveInstanceState(Bundle outState){
                 JSONObject JsonPetObject = j.getJSONObject(i);
                 String name = JsonPetObject.getString(getString(R.string.name));
                 String file = JsonPetObject.getString(getString(R.string.file));
-                Pets aPet = new Pets(name,file);
+                Pets aPet = new Pets(name, file);
                 pets.add(aPet);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -141,15 +150,16 @@ protected void onSaveInstanceState(Bundle outState){
         }
     }
 
-    public void setPetAdapter(){
+    public void setPetAdapter() {
         ArrayList<String> names = new ArrayList<>();
-        for (Pets p : pets){
+        for (Pets p : pets) {
             String name = p.getName();
             names.add(name);
         }
         //Setting adapter to show the items in the spinner
         petSpinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, names));
     }
+
     /*
      * onCreateOptionsMenu creates the application's menu
      */
@@ -171,12 +181,11 @@ protected void onSaveInstanceState(Bundle outState){
         String fileOfSelectedImage = pets.get(position).getFile();
         String beginingOfURL = "http://www.pcs.cnu.edu/~kperkins/pets/"; //getString(R.string.link);
         String fullUrl = beginingOfURL + fileOfSelectedImage;
-        if (!myCheck.isNetworkReachable() && !myCheck.isWifiReachable()){
+        if (!myCheck.isNetworkReachable() && !myCheck.isWifiReachable()) {
             mv.setImageResource(R.drawable.network_unreachable);
             petSpinner.setVisibility(View.GONE);
             pets.clear();
-        }
-        else{
+        } else {
             mv.setImageUrl(fullUrl);
         }
     }
