@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Spinner.OnItemSelectedListener {
     ConnectivityCheck myCheck;
-    private String MYURL = "http:www.pcs.cnu.edu/~kperkins/pets/pets.json"; //getString(R.string.link_json);
+    private String MYURL; //getString(R.string.link_json);
     JSONArray jsonArray;
     ArrayList<Pets> pets;
     Spinner petSpinner;
@@ -38,19 +38,14 @@ public class MainActivity extends AppCompatActivity implements Spinner.OnItemSel
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         petSpinner = (Spinner) findViewById(R.id.spinner);
         petSpinner.setOnItemSelectedListener(this);
         myCheck = new ConnectivityCheck(this);
         myPreference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        MYURL = myPreference.getString(getString(R.string.PREF_LIST), getString(R.string.Nothing_Found));
         pets = new ArrayList<>();
         setPreferenceChangeListener();
-        if(savedInstanceState != null){
-            this.MYURL = savedInstanceState.getString("myURL");
-        }
-        else{
-            pullJSONData();
-        }
+        pullJSONData();
     }
     @Override
     protected void onResume() {
